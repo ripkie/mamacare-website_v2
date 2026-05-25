@@ -37,6 +37,13 @@ type Position = "duduk" | "miring_kiri" | "terlentang";
 type Patient = {
   patientId: string;
   patientName: string;
+  age?: number | null;
+  phoneNumber?: string | null;
+  gestationalAge?: string | null;
+  marriageNumber?: number | null;
+  weight?: number | null;
+  height?: number | null;
+  bmi?: number | null;
   createdByNurseId?: string;
   createdByNurseName?: string;
   latestSessionId?: string | null;
@@ -568,6 +575,12 @@ export default function PatientsPage() {
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isCreatingPatient, setIsCreatingPatient] = useState(false);
   const [newPatientName, setNewPatientName] = useState("");
+  const [newPatientAge, setNewPatientAge] = useState("");
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [newGestationalAge, setNewGestationalAge] = useState("");
+  const [newMarriageNumber, setNewMarriageNumber] = useState("");
+  const [newWeight, setNewWeight] = useState("");
+  const [newHeight, setNewHeight] = useState("");
   const [newNurseName, setNewNurseName] = useState("Bidan Test");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -728,12 +741,50 @@ export default function PatientsPage() {
     }
   }
 
+  function parseOptionalNumber(value: string) {
+    if (!value.trim()) return null;
+
+    const parsed = Number(value.replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function calculateBmi(weightKg: number | null, heightCm: number | null) {
+    if (!weightKg || !heightCm) return null;
+
+    const heightMeter = heightCm / 100;
+    const bmi = weightKg / (heightMeter * heightMeter);
+
+    return Number(bmi.toFixed(1));
+  }
+
   async function createPatient() {
     const patientName = newPatientName.trim();
     const nurseName = newNurseName.trim();
+    const age = parseOptionalNumber(newPatientAge);
+    const phoneNumber = newPhoneNumber.trim();
+    const gestationalAge = newGestationalAge.trim();
+    const marriageNumber = parseOptionalNumber(newMarriageNumber);
+    const weight = parseOptionalNumber(newWeight);
+    const height = parseOptionalNumber(newHeight);
+    const bmi = calculateBmi(weight, height);
 
     if (!patientName) {
       setMessage("Nama pasien wajib diisi.");
+      return;
+    }
+
+    if (!age) {
+      setMessage("Usia pasien wajib diisi.");
+      return;
+    }
+
+    if (!phoneNumber) {
+      setMessage("No. HP wajib diisi.");
+      return;
+    }
+
+    if (!gestationalAge) {
+      setMessage("Umur kehamilan wajib diisi.");
       return;
     }
 
@@ -748,6 +799,13 @@ export default function PatientsPage() {
       const patientData = {
         patientId,
         patientName,
+        age,
+        phoneNumber,
+        gestationalAge,
+        marriageNumber,
+        weight,
+        height,
+        bmi,
         createdByNurseId: "manualUid",
         createdByNurseName: nurseName || "Manual Nurse",
         latestSessionId: null,
@@ -760,6 +818,12 @@ export default function PatientsPage() {
 
       setSelectedPatientId(patientId);
       setNewPatientName("");
+      setNewPatientAge("");
+      setNewPhoneNumber("");
+      setNewGestationalAge("");
+      setNewMarriageNumber("");
+      setNewWeight("");
+      setNewHeight("");
       setNewNurseName("Bidan Test");
       setIsAddPatientOpen(false);
       setMessage(`Pasien ${patientName} berhasil ditambahkan.`);
@@ -1437,6 +1501,106 @@ export default function PatientsPage() {
                 />
               </label>
 
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    Usia
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={newPatientAge}
+                    onChange={(event) => setNewPatientAge(event.target.value)}
+                    placeholder="Contoh: 28"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    No. HP
+                  </span>
+                  <input
+                    value={newPhoneNumber}
+                    onChange={(event) => setNewPhoneNumber(event.target.value)}
+                    placeholder="Contoh: 081234567890"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    Umur Kehamilan (UK)
+                  </span>
+                  <input
+                    value={newGestationalAge}
+                    onChange={(event) => setNewGestationalAge(event.target.value)}
+                    placeholder="Contoh: 32 minggu"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    Pernikahan ke-
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={newMarriageNumber}
+                    onChange={(event) => setNewMarriageNumber(event.target.value)}
+                    placeholder="Contoh: 1"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    BB (kg)
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    step="0.1"
+                    value={newWeight}
+                    onChange={(event) => setNewWeight(event.target.value)}
+                    placeholder="60"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    TB (cm)
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    step="0.1"
+                    value={newHeight}
+                    onChange={(event) => setNewHeight(event.target.value)}
+                    placeholder="155"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <div className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    IMT
+                  </span>
+                  <div className="rounded-2xl border border-brand-gray-border bg-brand-gray-soft px-4 py-3 text-sm font-bold text-brand-navy">
+                    {calculateBmi(
+                      parseOptionalNumber(newWeight),
+                      parseOptionalNumber(newHeight),
+                    ) ?? "-"}
+                  </div>
+                </div>
+              </div>
+
               <label className="grid gap-2">
                 <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
                   Nama Bidan / Nurse
@@ -1450,7 +1614,7 @@ export default function PatientsPage() {
               </label>
 
               <div className="rounded-2xl border border-brand-gray-border bg-brand-gray-soft p-4 text-xs text-brand-navy/60">
-                patientId akan dibuat otomatis dengan format <b>{"{epoch}_{counter}"}</b>.
+                IMT dihitung otomatis dari BB dan TB jika keduanya diisi.
                 Session belum dibuat sampai pasien di-set aktif dan pemeriksaan dimulai.
               </div>
 
@@ -1466,7 +1630,13 @@ export default function PatientsPage() {
                 <button
                   type="button"
                   onClick={createPatient}
-                  disabled={isCreatingPatient || !newPatientName.trim()}
+                  disabled={
+                    isCreatingPatient ||
+                    !newPatientName.trim() ||
+                    !newPatientAge.trim() ||
+                    !newPhoneNumber.trim() ||
+                    !newGestationalAge.trim()
+                  }
                   className="rounded-2xl bg-[#FBCC25] px-4 py-3 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-[#FFB00B] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isCreatingPatient ? "Menyimpan..." : "Simpan Pasien"}
