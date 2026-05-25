@@ -28,6 +28,13 @@ type Position = "duduk" | "miring_kiri" | "terlentang" | string;
 type Patient = {
   patientId: string;
   patientName: string;
+  age?: number | null;
+  phoneNumber?: string | null;
+  gestationalAge?: string | null;
+  marriageNumber?: number | null;
+  weight?: number | null;
+  height?: number | null;
+  bmi?: number | null;
   createdByNurseName?: string;
 };
 
@@ -59,6 +66,13 @@ type Measurement = {
 
 type HistoryRow = Measurement & {
   patientName: string;
+  age: number | null;
+  phoneNumber: string | null;
+  gestationalAge: string | null;
+  marriageNumber: number | null;
+  weight: number | null;
+  height: number | null;
+  bmi: number | null;
   nurseName: string;
   deviceName: string;
   sessionStatus: string;
@@ -139,6 +153,13 @@ function normalizePatient(id: string, data: DocumentData): Patient {
   return {
     patientId: String(data.patientId ?? id),
     patientName: String(data.patientName ?? "Tanpa Nama"),
+    age: numberOrNull(data.age),
+    phoneNumber: data.phoneNumber ? String(data.phoneNumber) : null,
+    gestationalAge: data.gestationalAge ? String(data.gestationalAge) : null,
+    marriageNumber: numberOrNull(data.marriageNumber),
+    weight: numberOrNull(data.weight),
+    height: numberOrNull(data.height),
+    bmi: numberOrNull(data.bmi),
     createdByNurseName:
       typeof data.createdByNurseName === "string"
         ? data.createdByNurseName
@@ -211,6 +232,13 @@ function downloadExcel(rows: HistoryRow[]) {
   const data = rows.map((row) => ({
     Waktu: row.waktu,
     Pasien: row.patientName,
+    Usia: row.age ?? "-",
+    "No. HP": row.phoneNumber ?? "-",
+    "Umur Kehamilan (UK)": row.gestationalAge ?? "-",
+    "Pernikahan ke-": row.marriageNumber ?? "-",
+    BB: row.weight ?? "-",
+    TB: row.height ?? "-",
+    IMT: row.bmi ?? "-",
     Petugas: row.nurseName,
     Device: row.deviceName,
     Posisi: row.position,
@@ -229,6 +257,13 @@ function downloadExcel(rows: HistoryRow[]) {
   worksheet["!cols"] = [
     { wch: 20 },
     { wch: 22 },
+    { wch: 8 },
+    { wch: 16 },
+    { wch: 20 },
+    { wch: 14 },
+    { wch: 8 },
+    { wch: 8 },
+    { wch: 8 },
     { wch: 18 },
     { wch: 14 },
     { wch: 16 },
@@ -317,6 +352,13 @@ export default function RiwayatPage() {
         ...measurement,
         patientName:
           session?.patientName || patient?.patientName || measurement.patientId,
+        age: patient?.age ?? null,
+        phoneNumber: patient?.phoneNumber ?? null,
+        gestationalAge: patient?.gestationalAge ?? null,
+        marriageNumber: patient?.marriageNumber ?? null,
+        weight: patient?.weight ?? null,
+        height: patient?.height ?? null,
+        bmi: patient?.bmi ?? null,
         nurseName: session?.nurseName || patient?.createdByNurseName || "-",
         deviceName: session?.deviceName || measurement.deviceId || "-",
         sessionStatus: session?.status || "-",
@@ -487,11 +529,18 @@ export default function RiwayatPage() {
             </div>
           ) : (
             <div className="max-h-[620px] overflow-auto">
-              <table className="w-full min-w-[860px] text-left text-xs">
+              <table className="w-full min-w-[1320px] text-left text-xs">
                 <thead className="sticky top-0 z-10 bg-brand-gray-soft uppercase text-brand-navy/45">
                   <tr>
                     <th className="px-4 py-3">Tanggal</th>
                     <th className="px-4 py-3">Pasien</th>
+                    <th className="px-4 py-3">Usia</th>
+                    <th className="px-4 py-3">No. HP</th>
+                    <th className="px-4 py-3">UK</th>
+                    <th className="px-4 py-3">Pernikahan</th>
+                    <th className="px-4 py-3">BB</th>
+                    <th className="px-4 py-3">TB</th>
+                    <th className="px-4 py-3">IMT</th>
                     <th className="px-4 py-3">Petugas</th>
                     <th className="px-4 py-3">SBP</th>
                     <th className="px-4 py-3">DBP</th>
@@ -511,6 +560,27 @@ export default function RiwayatPage() {
                         {row.waktu}
                       </td>
                       <td className="px-4 py-3 font-bold">{row.patientName}</td>
+                      <td className="px-4 py-3 text-brand-navy/70">
+                        {row.age ?? "-"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-brand-navy/70">
+                        {row.phoneNumber ?? "-"}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-3 text-brand-navy/70">
+                        {row.gestationalAge ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-brand-navy/70">
+                        {row.marriageNumber ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-brand-navy/70">
+                        {row.weight ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 text-brand-navy/70">
+                        {row.height ?? "-"}
+                      </td>
+                      <td className="px-4 py-3 font-semibold text-brand-navy">
+                        {row.bmi ?? "-"}
+                      </td>
                       <td className="px-4 py-3 text-brand-navy/60">
                         {row.nurseName}
                       </td>
