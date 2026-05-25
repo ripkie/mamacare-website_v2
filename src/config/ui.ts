@@ -1,4 +1,4 @@
 export const UI_CONFIG = {
-    SHOW_ADD_PATIENT_IN_DASHBOARD: true,
+    SHOW_ADD_PATIENT_IN_DASHBOARD: false,
     SHOW_ADD_PATIENT_IN_PATIENTS: true,
 };
