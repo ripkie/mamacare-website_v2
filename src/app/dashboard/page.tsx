@@ -557,12 +557,12 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="mb-3 flex flex-col gap-3 lg:mb-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold leading-tight text-brand-navy lg:text-4xl">
+          <h1 className="font-display text-xl font-bold sm:text-3xl leading-tight text-brand-navy lg:text-4xl">
             Dashboard MamaCare V2
           </h1>
-          <p className="mt-1 text-sm text-brand-navy/60">
+          <p className="mt-1 text-xs text-brand-navy/60 sm:text-sm">
             Monitoring pasien yang sedang diset aktif oleh nurse secara
             realtime.
           </p>
@@ -590,23 +590,23 @@ export default function DashboardPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2">
             {stats.map(({ label, value, icon: Icon }) => (
               <div
                 key={label}
-                className="rounded-2xl border border-brand-gray-border bg-white p-4 shadow-card"
+                className="min-w-0 rounded-2xl border border-brand-gray-border bg-white px-2 py-2 shadow-card sm:px-3 sm:py-3"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/45">
+                <div className="flex min-w-0 items-center justify-between gap-1 sm:gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-[9px] font-bold uppercase tracking-wide text-brand-navy/45 sm:text-[11px]">
                       {label}
                     </p>
-                    <p className="font-display mt-1 text-3xl font-bold text-brand-navy">
+                    <p className="font-display mt-0.5 text-xl font-bold leading-none text-brand-navy sm:mt-1 sm:text-3xl">
                       {value}
                     </p>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-yellow1/25 text-brand-yellow2">
-                    <Icon size={20} />
+                  <div className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-yellow1/25 text-brand-yellow2 sm:flex">
+                    <Icon size={18} />
                   </div>
                 </div>
               </div>
@@ -614,7 +614,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[360px_1fr]">
-            <section className="rounded-3xl border border-brand-gray-border bg-white p-4 shadow-card">
+            <section className="rounded-2xl border border-brand-gray-border bg-white p-3 shadow-card sm:rounded-3xl sm:p-4">
               <div className="mb-3 flex items-center justify-between">
                 <div>
                   <h2 className="font-display text-xl font-bold text-brand-navy">
@@ -691,7 +691,7 @@ export default function DashboardPage() {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-brand-gray-border bg-white p-4 shadow-card">
+            <section className="rounded-2xl border border-brand-gray-border bg-white p-3 shadow-card sm:rounded-3xl sm:p-4">
               {!activePatient ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-brand-gray-border text-center">
                   <CheckCircle2 className="mb-3 text-emerald-500" size={38} />
@@ -732,7 +732,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <div className="mb-3 grid grid-cols-2 gap-2 text-sm lg:grid-cols-4">
+                  <div className="mb-3 grid grid-cols-3 gap-2">
                     <div className="rounded-2xl bg-brand-gray-soft p-3">
                       <p className="text-xs text-brand-navy/40">Device</p>
                       <p className="font-bold text-brand-navy">
@@ -779,7 +779,7 @@ export default function DashboardPage() {
 
                   <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.2fr_1fr]">
                     <div className="rounded-2xl border border-brand-gray-border bg-white p-4">
-                      <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/40">
+                      <p className="text-[10px] font-bold uppercase tracking-wide sm:text-[11px] text-brand-navy/40">
                         Tekanan Darah
                       </p>
                       <div className="mt-2 flex items-end gap-2">
@@ -800,23 +800,23 @@ export default function DashboardPage() {
 
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-2xl border border-brand-gray-border bg-brand-gray-soft p-4">
-                        <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/40">
+                        <p className="text-[10px] font-bold uppercase tracking-wide sm:text-[11px] text-brand-navy/40">
                           BPM
                         </p>
-                        <p className="mt-2 text-3xl font-bold text-brand-navy">
+                        <p className="mt-2 text-xl font-bold sm:text-3xl text-brand-navy">
                           {displayedMeasurement?.bpm ?? "-"}
                         </p>
                       </div>
                       <div className="rounded-2xl border border-brand-gray-border bg-brand-gray-soft p-4">
-                        <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/40">
+                        <p className="text-[10px] font-bold uppercase tracking-wide sm:text-[11px] text-brand-navy/40">
                           MAP
                         </p>
-                        <p className="mt-2 text-3xl font-bold text-brand-navy">
+                        <p className="mt-2 text-xl font-bold sm:text-3xl text-brand-navy">
                           {displayedMeasurement?.map ?? "-"}
                         </p>
                       </div>
                       <div className="col-span-2 rounded-2xl border border-brand-gray-border bg-emerald-50 p-4">
-                        <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-700/70">
+                        <p className="text-[10px] font-bold uppercase tracking-wide sm:text-[11px] text-emerald-700/70">
                           ROT
                         </p>
                         <p className="mt-1 text-4xl font-bold text-emerald-700">
