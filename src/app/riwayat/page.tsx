@@ -247,7 +247,6 @@ function downloadExcel(rows: HistoryRow[]) {
     BPM: row.bpm ?? "-",
     MAP: row.map ?? "-",
     ROT: row.rot ?? "-",
-    "Battery Raw": row.batteryRaw ?? "-",
     "Status Klinis": row.statusLabel,
     "Status Session": row.sessionStatus,
   }));
