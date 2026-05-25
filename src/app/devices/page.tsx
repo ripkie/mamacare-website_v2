@@ -160,80 +160,77 @@ export default function DevicesPage() {
 
   return (
     <AppShell>
-      <div className="mb-5 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+      <div className="mb-3 flex flex-col gap-2 lg:mb-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-brand-navy lg:text-4xl">
+          <h1 className="font-display text-2xl font-bold text-brand-navy lg:text-4xl">
             Devices
           </h1>
-          <p className="mt-1 text-sm text-brand-navy/60">
+          <p className="mt-1 text-xs text-brand-navy/60 sm:text-sm">
             Monitoring alat MamaCare. Device bisa available tetapi tetap terikat ke pasien aktif.
           </p>
         </div>
 
-        <div className="rounded-2xl border border-brand-gray-border bg-white px-4 py-2 text-xs font-semibold text-brand-navy/65 shadow-sm">
-          Hybrid V2: alat dan pasien dipisah
-        </div>
       </div>
 
-      <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-5">
-        <div className="rounded-2xl border border-brand-gray-border bg-white p-4 shadow-card">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/45">
+      <div className="mb-3 grid grid-cols-5 gap-2 lg:mb-5 lg:gap-3">
+        <div className="min-w-0 rounded-2xl border border-brand-gray-border bg-white px-2 py-2 shadow-card sm:p-4">
+          <p className="truncate text-[8px] font-bold uppercase tracking-wide text-brand-navy/45 sm:text-[11px]">
             Total Device
           </p>
-          <p className="font-display mt-1 text-3xl font-bold text-brand-navy">
+          <p className="font-display mt-0.5 text-xl font-bold leading-none text-brand-navy sm:mt-1 sm:text-3xl">
             {summary.total}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-green-100 bg-white p-4 shadow-card">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/45">
+        <div className="min-w-0 rounded-2xl border border-green-100 bg-white px-2 py-2 shadow-card sm:p-4">
+          <p className="truncate text-[8px] font-bold uppercase tracking-wide text-brand-navy/45 sm:text-[11px]">
             Available
           </p>
-          <p className="font-display mt-1 text-3xl font-bold text-green-700">
+          <p className="font-display mt-0.5 text-xl font-bold leading-none text-green-700 sm:mt-1 sm:text-3xl">
             {summary.available}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-yellow-100 bg-white p-4 shadow-card">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/45">
+        <div className="min-w-0 rounded-2xl border border-yellow-100 bg-white px-2 py-2 shadow-card sm:p-4">
+          <p className="truncate text-[8px] font-bold uppercase tracking-wide text-brand-navy/45 sm:text-[11px]">
             In Use
           </p>
-          <p className="font-display mt-1 text-3xl font-bold text-yellow-700">
+          <p className="font-display mt-0.5 text-xl font-bold leading-none text-yellow-700 sm:mt-1 sm:text-3xl">
             {summary.inUse}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-card">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/45">
+        <div className="min-w-0 rounded-2xl border border-emerald-100 bg-white px-2 py-2 shadow-card sm:p-4">
+          <p className="truncate text-[8px] font-bold uppercase tracking-wide text-brand-navy/45 sm:text-[11px]">
             Terikat Pasien
           </p>
-          <p className="font-display mt-1 text-3xl font-bold text-emerald-700">
+          <p className="font-display mt-0.5 text-xl font-bold leading-none text-emerald-700 sm:mt-1 sm:text-3xl">
             {summary.bound}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-red-100 bg-white p-4 shadow-card">
-          <p className="text-[11px] font-bold uppercase tracking-wide text-brand-navy/45">
+        <div className="min-w-0 rounded-2xl border border-red-100 bg-white px-2 py-2 shadow-card sm:p-4">
+          <p className="truncate text-[8px] font-bold uppercase tracking-wide text-brand-navy/45 sm:text-[11px]">
             Offline
           </p>
-          <p className="font-display mt-1 text-3xl font-bold text-red-700">
+          <p className="font-display mt-0.5 text-xl font-bold leading-none text-red-700 sm:mt-1 sm:text-3xl">
             {summary.offline}
           </p>
         </div>
       </div>
 
-      <div className="mb-5 rounded-3xl border border-brand-gray-border bg-white p-4 shadow-card">
+      <div className="mb-3 rounded-2xl border border-brand-gray-border bg-white p-3 shadow-card lg:mb-5 lg:rounded-3xl lg:p-4">
         <h2 className="font-display text-lg font-bold text-brand-navy">
           Cara membaca status
         </h2>
-        <div className="mt-3 grid gap-3 text-sm text-brand-navy/65 lg:grid-cols-3">
-          <div className="rounded-2xl bg-brand-gray-soft p-3">
+        <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-brand-navy/65 sm:grid-cols-3 sm:text-sm">
+          <div className="rounded-xl bg-brand-gray-soft p-2 sm:rounded-2xl sm:p-3">
             <b className="text-brand-navy">Available</b> berarti alat sedang standby / tidak mengukur.
           </div>
-          <div className="rounded-2xl bg-brand-gray-soft p-3">
+          <div className="rounded-xl bg-brand-gray-soft p-2 sm:rounded-2xl sm:p-3">
             <b className="text-brand-navy">In Use</b> berarti alat sedang dalam pemeriksaan aktif.
           </div>
-          <div className="rounded-2xl bg-brand-gray-soft p-3">
+          <div className="rounded-xl bg-brand-gray-soft p-2 sm:rounded-2xl sm:p-3">
             <b className="text-brand-navy">Terikat pasien</b> berarti alat diarahkan ke pasien itu sampai bidan memilih pasien lain.
           </div>
         </div>
@@ -255,7 +252,7 @@ export default function DevicesPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
           {devices.map((device) => {
             const isBound = Boolean(device.currentPatientId);
             const isMeasuring =
@@ -265,31 +262,31 @@ export default function DevicesPage() {
             return (
               <div
                 key={device.deviceId}
-                className="rounded-3xl border border-brand-gray-border bg-white p-5 shadow-card"
+                className="rounded-2xl border border-brand-gray-border bg-white p-3 shadow-card sm:rounded-3xl sm:p-5"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FBCC25]/25 text-brand-navy">
-                      <Cpu className="h-6 w-6" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FBCC25]/25 text-brand-navy sm:h-12 sm:w-12">
+                      <Cpu className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                     <div>
-                      <h2 className="font-display text-2xl font-bold text-brand-navy">
+                      <h2 className="font-display text-xl font-bold text-brand-navy sm:text-2xl">
                         {device.deviceName || 'Unnamed Device'}
                       </h2>
                       <p className="text-xs text-brand-navy/50">ID: {device.deviceId}</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap justify-end gap-2">
+                  <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:flex-wrap sm:justify-end sm:gap-2">
                     <span
-                      className={`rounded-full border px-3 py-1 text-xs font-bold ${statusClass(
+                      className={`rounded-full border px-2.5 py-1 text-[10px] font-bold sm:px-3 sm:text-xs ${statusClass(
                         device.status,
                       )}`}
                     >
                       {device.status || '-'}
                     </span>
                     <span
-                      className={`rounded-full border px-3 py-1 text-xs font-bold ${sessionClass(
+                      className={`rounded-full border px-2.5 py-1 text-[10px] font-bold sm:px-3 sm:text-xs ${sessionClass(
                         device.sessionStatus,
                       )}`}
                     >
@@ -298,7 +295,7 @@ export default function DevicesPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-brand-gray-border bg-brand-gray-soft/70 p-4">
+                <div className="mt-3 rounded-2xl border border-brand-gray-border bg-brand-gray-soft/70 p-3 sm:mt-4 sm:p-4">
                   <div className="flex items-start gap-3">
                     {isMeasuring ? (
                       <Activity className="mt-0.5 h-5 w-5 text-yellow-700" />
@@ -317,37 +314,37 @@ export default function DevicesPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-                  <div className={`rounded-2xl border p-4 ${bindingClass(isBound)}`}>
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide opacity-70">
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm md:grid-cols-2">
+                  <div className={`min-w-0 rounded-2xl border p-3 sm:p-4 ${bindingClass(isBound)}`}>
+                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide sm:text-xs opacity-70">
                       <UserRound className="h-4 w-4" />
                       Pasien Terikat
                     </div>
-                    <p className="mt-2 font-bold">
+                    <p className="mt-1 truncate font-bold sm:mt-2">
                       {device.currentPatientName || '-'}
                     </p>
-                    <p className="mt-1 text-xs opacity-70">
+                    <p className="mt-1 truncate text-[10px] opacity-70 sm:text-xs">
                       {device.currentPatientId || 'Belum ada pasien terikat'}
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-brand-gray-soft p-4">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                  <div className="min-w-0 rounded-2xl bg-brand-gray-soft p-3 sm:p-4">
+                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide sm:text-xs text-brand-navy/50">
                       <Activity className="h-4 w-4" />
                       Session Aktif
                     </div>
-                    <p className="mt-2 break-all font-semibold text-brand-navy">
+                    <p className="mt-1 break-all font-semibold text-brand-navy sm:mt-2">
                       {device.currentSessionId || '-'}
                     </p>
-                    <p className="mt-1 text-xs text-brand-navy/45">
+                    <p className="mt-1 hidden text-xs text-brand-navy/45 sm:block">
                       {device.currentSessionId
                         ? 'Pemeriksaan sedang berjalan'
                         : 'Belum ada pemeriksaan berjalan'}
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-brand-gray-soft p-4">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                  <div className="min-w-0 rounded-2xl bg-brand-gray-soft p-3 sm:p-4">
+                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide sm:text-xs text-brand-navy/50">
                       <Battery className="h-4 w-4" />
                       Battery Raw
                     </div>
@@ -356,8 +353,8 @@ export default function DevicesPage() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-brand-gray-soft p-4">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                  <div className="min-w-0 rounded-2xl bg-brand-gray-soft p-3 sm:p-4">
+                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide sm:text-xs text-brand-navy/50">
                       <Wifi className="h-4 w-4" />
                       WiFi Status
                     </div>
@@ -367,7 +364,7 @@ export default function DevicesPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-brand-navy/50">
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-[10px] text-brand-navy/50 sm:mt-4 sm:gap-4 sm:text-xs">
                   <span className="inline-flex items-center gap-1">
                     <Clock3 className="h-4 w-4" />
                     Last seen: {formatLastSeen(device.lastSeenEpoch)}
