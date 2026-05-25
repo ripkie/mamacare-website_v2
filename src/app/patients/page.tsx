@@ -574,6 +574,14 @@ export default function PatientsPage() {
   const [isCancellingExam, setIsCancellingExam] = useState(false);
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [isCreatingPatient, setIsCreatingPatient] = useState(false);
+  const [isEditPatientOpen, setIsEditPatientOpen] = useState(false);
+  const [isUpdatingPatient, setIsUpdatingPatient] = useState(false);
+  const [editPatientAge, setEditPatientAge] = useState("");
+  const [editPhoneNumber, setEditPhoneNumber] = useState("");
+  const [editGestationalAge, setEditGestationalAge] = useState("");
+  const [editMarriageNumber, setEditMarriageNumber] = useState("");
+  const [editWeight, setEditWeight] = useState("");
+  const [editHeight, setEditHeight] = useState("");
   const [newPatientName, setNewPatientName] = useState("");
   const [newPatientAge, setNewPatientAge] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
@@ -832,6 +840,71 @@ export default function PatientsPage() {
       setMessage("Gagal menambah pasien. Cek Firestore Rules dan console browser.");
     } finally {
       setIsCreatingPatient(false);
+    }
+  }
+
+  function openEditPatientModal() {
+    if (!selectedPatient) return;
+
+    const patient = selectedPatient.patient;
+
+    setEditPatientAge(patient.age ? String(patient.age) : "");
+    setEditPhoneNumber(patient.phoneNumber ?? "");
+    setEditGestationalAge(patient.gestationalAge ?? "");
+    setEditMarriageNumber(patient.marriageNumber ? String(patient.marriageNumber) : "");
+    setEditWeight(patient.weight ? String(patient.weight) : "");
+    setEditHeight(patient.height ? String(patient.height) : "");
+    setIsEditPatientOpen(true);
+  }
+
+  async function updatePatientIdentity() {
+    if (!selectedPatient) return;
+
+    const age = parseOptionalNumber(editPatientAge);
+    const phoneNumber = editPhoneNumber.trim();
+    const gestationalAge = editGestationalAge.trim();
+    const marriageNumber = parseOptionalNumber(editMarriageNumber);
+    const weight = parseOptionalNumber(editWeight);
+    const height = parseOptionalNumber(editHeight);
+    const bmi = calculateBmi(weight, height);
+
+    if (!age) {
+      setMessage("Usia pasien wajib diisi.");
+      return;
+    }
+
+    if (!phoneNumber) {
+      setMessage("No. HP wajib diisi.");
+      return;
+    }
+
+    if (!gestationalAge) {
+      setMessage("Umur kehamilan wajib diisi.");
+      return;
+    }
+
+    setIsUpdatingPatient(true);
+    setMessage(null);
+
+    try {
+      await updateDoc(doc(db, "patients", selectedPatient.patient.patientId), {
+        age,
+        phoneNumber,
+        gestationalAge,
+        marriageNumber,
+        weight,
+        height,
+        bmi,
+        updatedAt: serverTimestamp(),
+      });
+
+      setIsEditPatientOpen(false);
+      setMessage(`Data pasien ${selectedPatient.patient.patientName} berhasil diperbarui.`);
+    } catch (error) {
+      console.error(error);
+      setMessage("Gagal update data pasien. Cek Firestore Rules dan console browser.");
+    } finally {
+      setIsUpdatingPatient(false);
     }
   }
 
@@ -1097,6 +1170,14 @@ export default function PatientsPage() {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={openEditPatientModal}
+                      className="rounded-xl border border-brand-gray-border bg-white px-4 py-2 text-xs font-bold text-brand-navy transition hover:bg-brand-gray-soft"
+                    >
+                      Edit Data
+                    </button>
+
                     {isSelectedActive ? (
                       <>
                         <span className="rounded-full border border-green-200 bg-green-50 px-3 py-2 text-xs font-semibold text-green-700">
@@ -1164,6 +1245,64 @@ export default function PatientsPage() {
                     label="Device"
                     value={selectedPatient.latestSession?.deviceName ?? "-"}
                   />
+                </div>
+
+                <div className="mt-3 rounded-2xl border border-brand-gray-border bg-white p-3.5">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-sm font-bold text-brand-navy">
+                        Data Pasien
+                      </h3>
+                      <p className="text-xs text-brand-navy/45">
+                        Usia, kontak, kehamilan, dan antropometri
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2 text-sm text-brand-navy/70 sm:grid-cols-3">
+                    <InfoItem
+                      icon={<UserRound className="h-4 w-4" />}
+                      label="Usia"
+                      value={
+                        selectedPatient.patient.age
+                          ? `${selectedPatient.patient.age} tahun`
+                          : "-"
+                      }
+                    />
+                    <InfoItem
+                      icon={<UserRound className="h-4 w-4" />}
+                      label="No. HP"
+                      value={selectedPatient.patient.phoneNumber ?? "-"}
+                    />
+                    <InfoItem
+                      icon={<Baby className="h-4 w-4" />}
+                      label="UK"
+                      value={selectedPatient.patient.gestationalAge ?? "-"}
+                    />
+                    <InfoItem
+                      icon={<UserRound className="h-4 w-4" />}
+                      label="Pernikahan"
+                      value={
+                        selectedPatient.patient.marriageNumber
+                          ? `Ke-${selectedPatient.patient.marriageNumber}`
+                          : "-"
+                      }
+                    />
+                    <InfoItem
+                      icon={<Activity className="h-4 w-4" />}
+                      label="BB/TB"
+                      value={
+                        selectedPatient.patient.weight || selectedPatient.patient.height
+                          ? `${selectedPatient.patient.weight ?? "-"} kg / ${selectedPatient.patient.height ?? "-"} cm`
+                          : "-"
+                      }
+                    />
+                    <InfoItem
+                      icon={<Activity className="h-4 w-4" />}
+                      label="IMT"
+                      value={selectedPatient.patient.bmi ? String(selectedPatient.patient.bmi) : "-"}
+                    />
+                  </div>
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-brand-gray-border bg-brand-gray-soft/60 p-3.5">
@@ -1640,6 +1779,167 @@ export default function PatientsPage() {
                   className="rounded-2xl bg-[#FBCC25] px-4 py-3 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-[#FFB00B] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isCreatingPatient ? "Menyimpan..." : "Simpan Pasien"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isEditPatientOpen && selectedPatient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+          <div className="w-full max-w-2xl rounded-3xl bg-white p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="font-display text-2xl font-bold text-brand-navy">
+                  Edit Data Pasien
+                </h3>
+                <p className="mt-0.5 text-sm text-brand-navy/60">
+                  Hanya data pendukung yang bisa diedit. Nama pasien dan ID tidak diubah.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (isUpdatingPatient) return;
+                  setIsEditPatientOpen(false);
+                }}
+                className="rounded-full p-2 text-brand-navy/50 hover:bg-brand-gray-soft"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-5 grid gap-4">
+              <div className="rounded-2xl border border-brand-gray-border bg-brand-gray-soft p-4">
+                <p className="text-xs font-bold uppercase tracking-wide text-brand-navy/45">
+                  Pasien
+                </p>
+                <p className="mt-1 font-display text-xl font-bold text-brand-navy">
+                  {selectedPatient.patient.patientName}
+                </p>
+                <p className="text-xs text-brand-navy/45">
+                  ID: {selectedPatient.patient.patientId}
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    Usia
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={editPatientAge}
+                    onChange={(event) => setEditPatientAge(event.target.value)}
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    No. HP
+                  </span>
+                  <input
+                    value={editPhoneNumber}
+                    onChange={(event) => setEditPhoneNumber(event.target.value)}
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    Umur Kehamilan (UK)
+                  </span>
+                  <input
+                    value={editGestationalAge}
+                    onChange={(event) => setEditGestationalAge(event.target.value)}
+                    placeholder="Contoh: 32 minggu"
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    Pernikahan ke-
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={editMarriageNumber}
+                    onChange={(event) => setEditMarriageNumber(event.target.value)}
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    BB (kg)
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    step="0.1"
+                    value={editWeight}
+                    onChange={(event) => setEditWeight(event.target.value)}
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <label className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    TB (cm)
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    step="0.1"
+                    value={editHeight}
+                    onChange={(event) => setEditHeight(event.target.value)}
+                    className="rounded-2xl border border-brand-gray-border bg-white px-4 py-3 text-sm text-brand-navy outline-none placeholder:text-brand-navy/35 focus:border-[#FBCC25]"
+                  />
+                </label>
+
+                <div className="grid gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wide text-brand-navy/50">
+                    IMT
+                  </span>
+                  <div className="rounded-2xl border border-brand-gray-border bg-brand-gray-soft px-4 py-3 text-sm font-bold text-brand-navy">
+                    {calculateBmi(
+                      parseOptionalNumber(editWeight),
+                      parseOptionalNumber(editHeight),
+                    ) ?? "-"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsEditPatientOpen(false)}
+                  disabled={isUpdatingPatient}
+                  className="rounded-2xl border border-brand-gray-border px-4 py-3 text-sm font-bold text-brand-navy transition hover:bg-brand-gray-soft disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={updatePatientIdentity}
+                  disabled={
+                    isUpdatingPatient ||
+                    !editPatientAge.trim() ||
+                    !editPhoneNumber.trim() ||
+                    !editGestationalAge.trim()
+                  }
+                  className="rounded-2xl bg-[#FBCC25] px-4 py-3 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-[#FFB00B] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isUpdatingPatient ? "Menyimpan..." : "Simpan Perubahan"}
                 </button>
               </div>
             </div>
