@@ -564,6 +564,8 @@ export default function PatientsPage() {
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(
     null,
   );
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const [mobileListOpen, setMobileListOpen] = useState(false);
   const [setActivePatient, setSetActivePatient] = useState<PatientView | null>(
     null,
   );
@@ -1021,14 +1023,35 @@ export default function PatientsPage() {
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold text-brand-navy">
-            Daftar Pasien
+            <span className="lg:hidden">
+              {selectedPatient ? "Detail Pasien" : "Daftar Pasien"}
+            </span>
+            <span className="hidden lg:inline">Daftar Pasien</span>
           </h1>
           <p className="mt-0.5 text-sm text-brand-navy/60">
-            Pilih pasien, lihat pemeriksaan terakhir, lalu mulai pemeriksaan.
+            <span className="lg:hidden">
+              {selectedPatient
+                ? "Lihat data pasien, pemeriksaan terakhir, dan mulai pemeriksaan."
+                : "Pilih pasien, lihat pemeriksaan terakhir, lalu mulai pemeriksaan."}
+            </span>
+            <span className="hidden lg:inline">
+              Pilih pasien, lihat pemeriksaan terakhir, lalu mulai pemeriksaan.
+            </span>
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div
+          className={`flex flex-col gap-3 sm:flex-row sm:items-center ${selectedPatient ? "hidden lg:flex" : "flex"
+            }`}
+        >
+          <button
+            type="button"
+            onClick={() => setMobileListOpen(true)}
+            className="w-full rounded-2xl border border-brand-gray-border bg-white px-4 py-2.5 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-brand-gray-soft lg:hidden"
+          >
+            ☰ List Pasien
+          </button>
+
           <div className="relative">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-navy/35" />
             <input
@@ -1042,17 +1065,39 @@ export default function PatientsPage() {
             <button
               type="button"
               onClick={() => setIsAddPatientOpen(true)}
-              className="rounded-2xl bg-[#FBCC25] px-4 py-2.5 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-[#FFB00B]"
+              className="w-full rounded-2xl bg-[#FBCC25] px-4 py-2.5 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-[#FFB00B] sm:w-auto"
             >
               + Tambah Pasien
             </button>
           )}
 
-          <div className="rounded-2xl bg-white px-4 py-2.5 text-xs font-semibold text-brand-navy/70 shadow-sm ring-1 ring-brand-gray-border">
+          <div className="w-full rounded-2xl bg-white px-4 py-2.5 text-center text-xs font-semibold text-brand-navy/70 shadow-sm ring-1 ring-brand-gray-border sm:w-auto">
             Device available: {availableDevices.length}
           </div>
         </div>
       </div>
+
+      {selectedPatient && (
+        <div className="mb-4 grid grid-cols-2 gap-2 lg:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileListOpen(true)}
+            className="rounded-2xl border border-brand-gray-border bg-white px-4 py-2.5 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-brand-gray-soft"
+          >
+            ☰ List Pasien
+          </button>
+
+          {UI_CONFIG.SHOW_ADD_PATIENT_IN_PATIENTS && (
+            <button
+              type="button"
+              onClick={() => setIsAddPatientOpen(true)}
+              className="rounded-2xl bg-[#FBCC25] px-4 py-2.5 text-sm font-bold text-brand-navy shadow-sm transition hover:bg-[#FFB00B]"
+            >
+              + Pasien
+            </button>
+          )}
+        </div>
+      )}
 
       {message && (
         <div className="mb-4 rounded-2xl border border-[#FBCC25]/40 bg-[#FBCC25]/10 px-4 py-3 text-sm font-medium text-brand-navy">
@@ -1071,17 +1116,39 @@ export default function PatientsPage() {
         </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[330px_minmax(0,1fr)]">
-          <aside className="overflow-hidden rounded-2xl border border-brand-gray-border bg-white shadow-card">
-            <div className="border-b border-brand-gray-border p-3.5">
-              <h2 className="font-display text-lg font-bold text-brand-navy">
-                List Pasien
-              </h2>
-              <p className="text-xs text-brand-navy/45">
-                {filteredPatients.length} pasien tampil
-              </p>
+          {mobileListOpen && (
+            <button
+              type="button"
+              aria-label="Tutup list pasien"
+              onClick={() => setMobileListOpen(false)}
+              className="fixed inset-0 z-40 bg-black/35 lg:hidden"
+            />
+          )}
+
+          <aside
+            className={`fixed inset-y-0 left-0 z-50 w-[88vw] max-w-sm overflow-hidden border-r border-brand-gray-border bg-white shadow-2xl transition-transform duration-300 lg:static lg:z-auto lg:w-auto lg:max-w-none lg:translate-x-0 lg:rounded-2xl lg:border lg:shadow-card ${mobileListOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
+          >
+            <div className="flex items-start justify-between gap-3 border-b border-brand-gray-border p-3.5">
+              <div>
+                <h2 className="font-display text-lg font-bold text-brand-navy">
+                  List Pasien
+                </h2>
+                <p className="text-xs text-brand-navy/45">
+                  {filteredPatients.length} pasien tampil
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setMobileListOpen(false)}
+                className="rounded-xl border border-brand-gray-border px-3 py-1.5 text-xs font-bold text-brand-navy lg:hidden"
+              >
+                Tutup
+              </button>
             </div>
 
-            <div className="max-h-[560px] overflow-y-auto">
+            <div className="max-h-[calc(100dvh-80px)] overflow-y-auto lg:max-h-[560px]">
               {filteredPatients.map((view) => {
                 const active = view.patient.patientId === activePatientId;
                 const selected =
@@ -1096,9 +1163,11 @@ export default function PatientsPage() {
                   >
                     <button
                       type="button"
-                      onClick={() =>
-                        setSelectedPatientId(view.patient.patientId)
-                      }
+                      onClick={() => {
+                        setSelectedPatientId(view.patient.patientId);
+                        setMobileDetailOpen(true);
+                        setMobileListOpen(false);
+                      }}
                       className="flex min-w-0 flex-1 items-center gap-3 text-left"
                     >
                       <div
@@ -1132,6 +1201,8 @@ export default function PatientsPage() {
                         type="button"
                         onClick={() => {
                           setSelectedPatientId(view.patient.patientId);
+                          setMobileDetailOpen(true);
+                          setMobileListOpen(false);
                           setSetActivePatient(view);
                         }}
                         disabled={availableDevices.length === 0 || isActivating}
@@ -1151,7 +1222,7 @@ export default function PatientsPage() {
             </div>
           </aside>
 
-          <section className="rounded-2xl border border-brand-gray-border bg-white p-4 shadow-card">
+          <section className="min-w-0 rounded-2xl border border-brand-gray-border bg-white p-4 shadow-card">
             {selectedPatient ? (
               <>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -1169,11 +1240,11 @@ export default function PatientsPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-end gap-2">
+                  <div className="flex flex-wrap items-center justify-start gap-2 sm:justify-end">
                     <button
                       type="button"
                       onClick={openEditPatientModal}
-                      className="rounded-xl border border-brand-gray-border bg-white px-4 py-2 text-xs font-bold text-brand-navy transition hover:bg-brand-gray-soft"
+                      className="rounded-xl border border-brand-gray-border bg-white px-3 py-2 text-xs font-bold text-brand-navy transition hover:bg-brand-gray-soft sm:px-4"
                     >
                       Edit Data
                     </button>
@@ -1247,7 +1318,7 @@ export default function PatientsPage() {
                   />
                 </div>
 
-                <div className="mt-3 rounded-2xl border border-brand-gray-border bg-white p-3.5">
+                <div className="mt-3 rounded-2xl border border-brand-gray-border bg-white p-3 sm:p-3.5">
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <div>
                       <h3 className="text-sm font-bold text-brand-navy">
@@ -1305,7 +1376,7 @@ export default function PatientsPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-brand-gray-border bg-brand-gray-soft/60 p-3.5">
+                <div className="mt-4 rounded-2xl border border-brand-gray-border bg-brand-gray-soft/60 p-3 sm:p-3.5">
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <HeartPulse className="h-4 w-4 text-red-500" />
@@ -1441,7 +1512,7 @@ export default function PatientsPage() {
 
                 {selectedPatient.measurements.length > 0 && (
                   <div className="mt-3 overflow-hidden rounded-2xl border border-brand-gray-border">
-                    <table className="w-full text-left text-xs">
+                    <table className="min-w-[620px] w-full text-left text-xs">
                       <thead className="bg-brand-gray-soft text-xs uppercase text-brand-navy/45">
                         <tr>
                           <th className="px-3 py-2">Posisi</th>
@@ -1486,7 +1557,7 @@ export default function PatientsPage() {
                     </div>
 
                     <div className="max-h-72 overflow-auto">
-                      <table className="w-full text-left text-xs">
+                      <table className="min-w-[620px] w-full text-left text-xs">
                         <thead className="sticky top-0 bg-brand-gray-soft text-xs uppercase text-brand-navy/45">
                           <tr>
                             <th className="px-3 py-2">Waktu</th>
@@ -1544,7 +1615,7 @@ export default function PatientsPage() {
                     </div>
 
                     <div className="max-h-60 overflow-auto">
-                      <table className="w-full text-left text-xs">
+                      <table className="min-w-[620px] w-full text-left text-xs">
                         <thead className="sticky top-0 bg-brand-gray-soft text-xs uppercase text-brand-navy/45">
                           <tr>
                             <th className="px-3 py-2">Waktu</th>
@@ -1594,8 +1665,15 @@ export default function PatientsPage() {
                 )}
               </>
             ) : (
-              <div className="rounded-2xl bg-brand-gray-soft p-6 text-sm text-brand-navy/50">
-                Pilih pasien di sebelah kiri.
+              <div className="rounded-2xl bg-brand-gray-soft p-6 text-center text-sm text-brand-navy/50">
+                <p>Pilih pasien dari list untuk melihat detail.</p>
+                <button
+                  type="button"
+                  onClick={() => setMobileListOpen(true)}
+                  className="mt-3 rounded-xl bg-[#FBCC25] px-4 py-2 text-xs font-bold text-brand-navy lg:hidden"
+                >
+                  Buka List Pasien
+                </button>
               </div>
             )}
           </section>

@@ -15,7 +15,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user && pathname !== '/login') {
+      if (!user && pathname !== '/login' && pathname !== '/register') {
         router.replace('/login');
         return;
       }
@@ -28,8 +28,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   if (checkingAuth) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
-        <div className="rounded-3xl border border-brand-gray-border bg-white p-6 text-center shadow-card">
+      <div className="flex min-h-dvh w-full items-center justify-center bg-[#FAFAF8] px-4">
+        <div className="w-full max-w-xs rounded-3xl border border-brand-gray-border bg-white p-6 text-center shadow-card">
           <Loader2 className="mx-auto h-7 w-7 animate-spin text-brand-yellow2" />
           <p className="mt-3 text-sm font-semibold text-brand-navy/60">
             Mengecek sesi login...
@@ -40,14 +40,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFAF8]">
+    <div className="min-h-dvh w-full overflow-x-hidden bg-[#FAFAF8]">
       <Header />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
-        {children}
+      <main className="w-full px-2 pb-24 pt-3 sm:px-4 sm:pb-8 sm:pt-5 lg:mx-auto lg:max-w-7xl lg:px-6">
+        <div className="min-w-0">{children}</div>
       </main>
 
-      <footer className="hidden border-t border-brand-gray-border bg-white py-3 text-center text-[11px] font-medium text-brand-navy/40 sm:block">
+      <footer className="hidden border-t border-brand-gray-border bg-white py-3 text-center text-[11px] font-medium text-brand-navy/40 md:block">
         MamaCare © {new Date().getFullYear()} - Maternal Health Monitoring System
       </footer>
     </div>
